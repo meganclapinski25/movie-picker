@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Movie Picker</title>
+</head>
+<body>
+    <div class="title-box">
+        <h1>Movie Picker</h1>
+        <h3>Using ChatGPT and Movie API to get new movies to watch!</h3>
+    </div>
+
+    <div class="movie-input">
+        <h2>Enter A Movie You've Seen Here</h2>
+        <form id="movieForm" action="/search" method="GET">
+            <input type="text" id="mname" name="query" placeholder="Enter Movie Here">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="results">
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% elif movies %}
+            <div class="movie-row">
+                {% for movie in movies %}
+                    <div class="movie-card">
+                        <div class="card-inner">
+                            <!-- Front of the card -->
+                            <div class="card-front">
+                                {% if movie.poster_path %}
+                                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }} poster">
+                                {% endif %}
+                            </div>
+                            <!-- Back of the card -->
+                            <div class="card-back">
+                                <h3>{{ movie.title }}</h3>
+                                <p>{{ movie.overview or 'No description available.' }}</p>
+                                
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No movies found. Try another search.</p>
+        {% endif %}
+    </div>
+
+
+    
+    
+
+    <div class="buttons">
+        <button class="random" role="button">Random</button>
+        <button class="genre">Genre</button>
+        <button class="rating">Rating</button>
+    </div>
+
+    
+
+    
+</body>
+</html>
