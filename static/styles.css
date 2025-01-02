@@ -1,10 +1,10 @@
 body{
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     background-color: lightgrey;
-    display: flex; /* Enable flexbox */
-    flex-direction: column; /* Stack child elements vertically */
-    align-items: center; /* Center elements horizontally */
-    justify-content: center; /* Center elements vertically */
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
 }
 
 .title-box{
@@ -103,7 +103,7 @@ body{
 }
 
 .movie-card {
-  perspective: 1000px; /* Enables 3D space for the flip effect */
+  perspective: 1000px;
   width: 200px;
   height: 300px;
 }
@@ -112,19 +112,20 @@ body{
   position: relative;
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d; /* Preserves 3D space for both front and back */
-  transition: transform 0.6s ease; /* Smooth transition for the flip */
+  transform-style: preserve-3d; 
+  transition: transform 0.6s ease; 
 }
 
 .movie-card:hover .card-inner {
-  transform: rotateY(180deg); /* Flip the card on hover */
+  transform: rotateY(180deg); 
+  cursor: pointer;
 }
 
 .card-front, .card-back {
   position: absolute;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden; /* Hides the back when viewing the front */
+  backface-visibility: hidden;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -133,12 +134,12 @@ body{
 .card-front img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the poster image fits properly */
+  object-fit: cover; 
 }
 
 .card-back {
-  background-color: #f9f9f9; /* Background for the back of the card */
-  transform: rotateY(180deg); /* Starts flipped */
+  background-color: #f9f9f9; 
+  transform: rotateY(180deg); 
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -160,4 +161,31 @@ body{
   color: #555;
   text-align: center;
   margin-bottom: 5px;
+}
+.movie-input input[type="text"] {
+  width: 80%; 
+  padding: 10px;
+  border: 1px solid #ccc; 
+  border-radius: 25px; 
+  font-size: 16px; 
+  box-sizing: border-box; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+  outline: none; 
+  transition: border-color 0.3s, box-shadow 0.3s; 
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.movie-input .icon-button {
+  background: none; 
+  border: none; 
+  padding: 0; 
+  margin-left: 10px; 
+  cursor: pointer; 
+  font-size: 20px; 
+  color: white; 
+  transition: color 0.3s, transform 0.3s; 
+}
+.movie-input .icon-button:hover {
+  color: white; 
+  transform: scale(1.1); 
 }

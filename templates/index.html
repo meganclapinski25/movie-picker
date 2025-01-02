@@ -16,7 +16,7 @@
         <h2>Enter A Movie You've Seen Here</h2>
         <form id="movieForm" action="/search" method="GET">
             <input type="text" id="mname" name="query" placeholder="Enter Movie Here">
-            <button type="submit">Search</button>
+            <button type="submit" class = "icon-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
 
@@ -26,15 +26,15 @@
         {% elif movies %}
             <div class="movie-row">
                 {% for movie in movies %}
-                    <div class="movie-card">
+                    <div class="movie-card" data-movie-id="{{ movie.id }}">
                         <div class="card-inner">
-                            <!-- Front of the card -->
+                            
                             <div class="card-front">
                                 {% if movie.poster_path %}
                                     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }} poster">
                                 {% endif %}
                             </div>
-                            <!-- Back of the card -->
+                            
                             <div class="card-back">
                                 <h3>{{ movie.title }}</h3>
                                 <p>{{ movie.overview or 'No description available.' }}</p>
@@ -63,6 +63,25 @@
 
     
 
-    
+    <script src="https://kit.fontawesome.com/41fc63d31e.js" crossorigin="anonymous"></script>
+    <script> 
+        document.addEventListener("DOMContentLoaded", () => {
+            // Get all movie cards
+            const movieCards = document.querySelectorAll(".movie-card");
+        
+            // Add a click event listener to each card
+            movieCards.forEach(card => {
+                card.addEventListener("click", () => {
+                    // Hide all movie cards
+                    document.querySelectorAll(".movie-card").forEach(card => {
+                        card.style.display = "none";
+                    });
+        
+                    // Show only the clicked card
+                    card.style.display = "block";
+                });
+            });
+        });
+    </script>        
 </body>
 </html>
