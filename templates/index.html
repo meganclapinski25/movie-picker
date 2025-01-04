@@ -66,19 +66,43 @@
     <script src="https://kit.fontawesome.com/41fc63d31e.js" crossorigin="anonymous"></script>
     <script> 
         document.addEventListener("DOMContentLoaded", () => {
-            // Get all movie cards
             const movieCards = document.querySelectorAll(".movie-card");
         
-            // Add a click event listener to each card
             movieCards.forEach(card => {
                 card.addEventListener("click", () => {
-                    // Hide all movie cards
+                    const movieId = card.getAttribute("data-movie-id");
+                    const movieTitle = card.querySelector(".card-back h3").textContent;
+                    localStorage.setItem("selectedMovieId", movieId);
+                    localStorage.setItem("selectedMovieTitle", movieTitle);
+                    
+                    
                     document.querySelectorAll(".movie-card").forEach(card => {
                         card.style.display = "none";
                     });
         
-                    // Show only the clicked card
+                    
                     card.style.display = "block";
+                });
+            });
+        });
+        // Test buttons with nosferatu 
+        document.addEventListener("DOMContentLoaded", () => {
+            const nosferatuData = {
+                id: 12345,
+                title: "Nosferatu",
+                overview: "An Example",
+                release_date: "2024-4-5",
+            };
+            const buttons = {
+                random: document.querySelector(".random"),
+                genre: document.querySelector(".genre"),
+                rating: document.querySelector(".rating"),
+            };
+            Object.entries(buttons).forEach(([action, button]) => {
+                button.addEventListener("click", () => {
+                    console.clear(); // Clear the console for each button press
+                    console.log(`Button pressed: ${action}`);
+                    console.log("Movie data for Nosferatu:", nosferatuData);
                 });
             });
         });
