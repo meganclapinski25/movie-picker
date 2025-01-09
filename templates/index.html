@@ -7,11 +7,12 @@
     <title>Movie Picker</title>
 </head>
 <body>
+    <!--Header For Website -->
     <div class="title-box">
         <h1>Movie Picker</h1>
         <h3>Using ChatGPT and Movie API to get new movies to watch!</h3>
     </div>
-
+    <!-- Movie search -->
     <div class="movie-input">
         <h2>Enter A Movie You've Seen Here</h2>
         <form id="movieForm" action="/search" method="GET">
@@ -19,7 +20,7 @@
             <button type="submit" class = "icon-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         </form>
     </div>
-
+<!-- Search Results for Movie-->
     <div class="results">
         {% if error %}
             <p class="error">{{ error }}</p>
@@ -61,51 +62,80 @@
         <button class="rating">Rating</button>
     </div>
 
+    <div id="suggested-movie"></div>
+
     
 
     <script src="https://kit.fontawesome.com/41fc63d31e.js" crossorigin="anonymous"></script>
     <script> 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", ()=>{
+            let selectedMovie = null;
+
+            //Movie Card Selection
+
             const movieCards = document.querySelectorAll(".movie-card");
-        
-            movieCards.forEach(card => {
-                card.addEventListener("click", () => {
-                    const movieId = card.getAttribute("data-movie-id");
-                    const movieTitle = card.querySelector(".card-back h3").textContent;
-                    localStorage.setItem("selectedMovieId", movieId);
-                    localStorage.setItem("selectedMovieTitle", movieTitle);
-                    
-                    
-                    document.querySelectorAll(".movie-card").forEach(card => {
+            movieCards.forEach(card=>{
+                card.addEventListener("click", () =>{
+                    selectedMovie = {
+                        id: card.getAttribute("data-movie-id"),
+                        title: card.getAttribute("data-title"),
+                        genre: card.getAttribute("data-genre"),
+                        overview: card.getAttribute("data-overview")
+                    };
+
+                    movieCards.forEach(card => {
                         card.style.display = "none";
                     });
-        
-                    
                     card.style.display = "block";
                 });
             });
-        });
-        // Test buttons with nosferatu 
-        document.addEventListener("DOMContentLoaded", () => {
-            const nosferatuData = {
-                id: 12345,
-                title: "Nosferatu",
-                overview: "An Example",
-                release_date: "2024-4-5",
-            };
-            const buttons = {
-                random: document.querySelector(".random"),
-                genre: document.querySelector(".genre"),
-                rating: document.querySelector(".rating"),
-            };
-            Object.entries(buttons).forEach(([action, button]) => {
-                button.addEventListener("click", () => {
-                    console.clear(); // Clear the console for each button press
-                    console.log(`Button pressed: ${action}`);
-                    console.log("Movie data for Nosferatu:", nosferatuData);
+            const buttons = document.querySelectorAll(".buttons button");
+            buttons.forEach(button => {
+                button.addEventListener("click", async () => {
+                    if (!selectedMovie) {
+                        alert("Please select a movie first!");
+                        return;
+                    }
+
+                    const buttonText = button.textContent.toLowerCase(); // 'random', 'genre', or 'rating'
+
+                    // Send selected movie data to the server for movie suggestion
+                    try {
+                        const response = await fetch('/suggest_similar_movie', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                title: selectedMovie.title,
+                                genre: selectedMovie.genre,
+                                overview: selectedMovie.overview,
+                                button: buttonText
+                            })
+                        });
+        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.suggested_movie) {
+                                console.log("ChatGPT Suggested Movie: ", data.suggested_movie);
+        
+                                // Display the suggested movie below the selected movie
+                                const suggestedMovieDiv = document.getElementById('suggested-movie');
+                                suggestedMovieDiv.textContent = `Similar movie suggestion: ${data.suggested_movie}`;
+                                suggestedMovieDiv.style.display = "block"; // Make sure it's visible
+                            }
+                        } else {
+                            console.error("Error in response from server:", response.statusText);
+                            const errorData = await response.json();
+                            alert(`Error: ${errorData.error}`);
+                        }
+                    } catch (error) {
+                        console.error("Error making the API request:", error);
+                    }
                 });
             });
         });
+        
     </script>        
 </body>
 </html>
