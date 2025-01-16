@@ -27,7 +27,11 @@
         {% elif movies %}
             <div class="movie-row">
                 {% for movie in movies %}
-                    <div class="movie-card" data-movie-id="{{ movie.id }}">
+                    <div class="movie-card" 
+                    data-movie-id="{{ movie.id }}",
+                    data-title="{{ movie.title }}"
+                    data-overview="{{ movie.overview }}"
+                    img = "{{movie.poster_path}}">
                         <div class="card-inner">
                             
                             <div class="card-front">
@@ -47,7 +51,7 @@
                     
                 {% endfor %}
             </div>
-        {% else %}
+        {%  else %}
             <p>No movies found. Try another search.</p>
         {% endif %}
     </div>
@@ -55,87 +59,70 @@
 
     
     
-
+    <!-- Buttons -->
     <div class="buttons">
         <button class="random" role="button">Random</button>
         <button class="genre">Genre</button>
         <button class="rating">Rating</button>
     </div>
 
-    <div id="suggested-movie"></div>
+     
 
+    <!-- Popup for Selected Movie -->
+    <div id="movie-popup" class="popup">
+        <div class="popup-content">
+            <span class="popup-close">&times;</span>
+            <img id = "popup-poster"/>
+            <h3 id="popup-title"></h3>
+            <p id="popup-overview"></p>
+            <div id="popup-buttons" class="buttons">
+                <button class="random">Random</button>
+                <button class="genre">Genre</button>
+                <button class="rating">Rating</button>
+            </div>
+        </div>
+    </div>
     
 
-    <script src="https://kit.fontawesome.com/41fc63d31e.js" crossorigin="anonymous"></script>
-    <script> 
-        document.addEventListener("DOMContentLoaded", ()=>{
-            let selectedMovie = null;
+<script src="https://kit.fontawesome.com/41fc63d31e.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        let selectedMovie = null;
 
-            //Movie Card Selection
-
-            const movieCards = document.querySelectorAll(".movie-card");
-            movieCards.forEach(card=>{
-                card.addEventListener("click", () =>{
-                    selectedMovie = {
-                        id: card.getAttribute("data-movie-id"),
-                        title: card.getAttribute("data-title"),
-                        genre: card.getAttribute("data-genre"),
-                        overview: card.getAttribute("data-overview")
-                    };
-
-                    movieCards.forEach(card => {
-                        card.style.display = "none";
-                    });
-                    card.style.display = "block";
-                });
-            });
-            const buttons = document.querySelectorAll(".buttons button");
-            buttons.forEach(button => {
-                button.addEventListener("click", async () => {
-                    if (!selectedMovie) {
-                        alert("Please select a movie first!");
-                        return;
-                    }
-
-                    const buttonText = button.textContent.toLowerCase(); // 'random', 'genre', or 'rating'
-
-                    // Send selected movie data to the server for movie suggestion
-                    try {
-                        const response = await fetch('/suggest_similar_movie', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                title: selectedMovie.title,
-                                genre: selectedMovie.genre,
-                                overview: selectedMovie.overview,
-                                button: buttonText
-                            })
-                        });
-        
-                        if (response.ok) {
-                            const data = await response.json();
-                            if (data.suggested_movie) {
-                                console.log("ChatGPT Suggested Movie: ", data.suggested_movie);
-        
-                                // Display the suggested movie below the selected movie
-                                const suggestedMovieDiv = document.getElementById('suggested-movie');
-                                suggestedMovieDiv.textContent = `Similar movie suggestion: ${data.suggested_movie}`;
-                                suggestedMovieDiv.style.display = "block"; // Make sure it's visible
-                            }
-                        } else {
-                            console.error("Error in response from server:", response.statusText);
-                            const errorData = await response.json();
-                            alert(`Error: ${errorData.error}`);
-                        }
-                    } catch (error) {
-                        console.error("Error making the API request:", error);
-                    }
-                });
+        // Handle movie card click
+        document.querySelectorAll(".movie-card").forEach(card => {
+            card.addEventListener("click", () => {
+                selectedMovie = {
+                    id: card.getAttribute("data-movie-id"),
+                    title: card.getAttribute("data-title"),
+                    overview: card.getAttribute("data-overview"),
+                    poster_path: card.querySelector("img").src,
+                };
+                document.getElementById("popup-title").textContent = selectedMovie.title;
+                document.getElementById("popup-overview").textContent = selectedMovie.overview;
+                document.getElementById("popup-poster").src = selectedMovie.poster_path;
+                document.getElementById("movie-popup").style.display = "block";
             });
         });
-        
-    </script>        
+
+        // Close the popup
+        document.querySelector(".popup-close").addEventListener("click", () => {
+            document.getElementById("movie-popup").style.display = "none";
+        });
+
+        document.querySelectorAll("#popup-buttons button").forEach(button => {
+            button.addEventListener("click", () => {
+                if (!selectedMovie) {
+                    alert("Please select a movie first!");
+                    return;
+                }
+    
+                const buttonType = button.textContent.toLowerCase();
+                window.location.href = `/similar_movie?movie_id=${selectedMovie.id}&type=${buttonType}`;
+            });
+        });
+    });
+</script>
+
 </body>
 </html>

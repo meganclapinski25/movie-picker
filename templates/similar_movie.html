@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Similar Movies</title>
+</head>
+<body>
+    <h1>Similar Movies Based on Genre</h1>
+    {% if similar_movies %}
+        <div class="movie-row">
+            {% for movie in similar_movies %}
+                <div class="movie-card">
+                    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+                    <h3>{{ movie.title }}</h3>
+                    <p>{{ movie.overview }}</p>
+                </div>
+            {% endfor %}
+        </div>
+{% else %}
+    <p>No similar movies found.</p>
+{% endif %}
+
+<div>
+    <h3>{{ movie.title }}</h3>
+    <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+    <p>{{ movie.overview }}</p>
+</div>
+
+</body>
+</html>
+
+
+786892
